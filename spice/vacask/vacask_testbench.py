@@ -266,11 +266,10 @@ class vacask_testbench(testbench_common):
                 elif str(sim).lower() == "dc":
                     self.analysis += "analysis %s op (\n write=1\n)\n" % (
                         printfile,
-                        printfile,
                     )
 
                 elif str(sim).lower() == "ac":
-                    if val.fscale.lower() == "log":
+                    if val.fscale.lower() == "log" or val.fscale.lower() == "dec":
                         if val.fpoints != 0:
                             pts_str = 'mode="dec" points=%d' % val.fpoints
                         else:
@@ -486,7 +485,7 @@ class vacask_testbench(testbench_common):
             self._plotcmd = ""
             self._plotcmd += "control\n"
             self._plotcmd += options
-            self._plotcmd += "save all\n"
+            self._plotcmd += "save full\n"
             self._plotcmd += self.analysis
 
         return self._plotcmd

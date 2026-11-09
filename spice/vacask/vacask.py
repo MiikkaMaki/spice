@@ -322,10 +322,49 @@ class vacask(spice_common):
 
     def read_oppts(self):
         """Internally called function to read the DC operating points of the circuit"""
-        self.print_log(
-            type="W",
-            msg="Something went wrong while extracting DC operating points.",
-        )
+        try:
+            if "dc" in self.parent.simcmd_bundle.Members.keys():
+                self.extracts.Members.update({"oppts": {}})
+                # TODO: SWEEP AND MC
+                file = os.path.join(
+                    self.parent.spicesimpath,
+                    "%s.raw" % self.parent.runname,
+                )
+                # Read the raw file
+                raw = rawread(file)
+                if len(raw.arrs) == 0:
+                    self.print_log(
+                        type="E", msg="No data found in raw file %s" % file
+                    )
+                    return
+                import pdb
+                pdb.set_trace()
+                # Get the first plot's data and metadata
+                data = raw.arrs[0][1][0]
+                varnames = raw.arrs[0][0]["varnames"]
+
+                for i in range(len(varnames)):
+                    dev = ":".join(varnames[i].split(":")[0:-2])
+                    param = varnames[i].split(":")[-1]
+                    val = data[i] 
+                    if dev not in self.extracts.Members["oppts"]:
+                        self.extracts.Members["oppts"].update({dev: {}})
+                    # Found new parameter for device
+                    if param not in self.extracts.Members["oppts"][dev]:
+                        self.extracts.Members["oppts"][dev].update(
+                            {param: [val]}
+                        )
+                    else:  # Parameter already existed, just append value. This can occur in e.g. sweeps
+                        self.extracts.Members["oppts"][dev][param].append(val)
+            else:  # DC analysis not in simcmds, oppts is empty
+                self.extracts.Members.update({"oppts": {}})
+
+        except:
+            self.print_log(type="W", msg=traceback.format_exc())
+            self.print_log(
+                type="W",
+                msg="Something went wrong while extracting DC operating points.",
+            )
 
     def parse_io_from_file(self, filepath, start, stop, dtype, labels, queue):
         """Parse specific lines from a vacask print file.
