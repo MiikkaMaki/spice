@@ -10,13 +10,14 @@ Initially written by Miikka Mäki, 2026
 
 import os
 import re
-import pandas as pd
-import subprocess
-import multiprocessing
 from spice.spice_common import spice_common
 import numpy as np
 import traceback
+import pandas as pd
+import subprocess
+import multiprocessing
 import glob
+from pathlib import Path
 
 from spice.vacask.vacask_rawread import rawread
 
@@ -296,10 +297,55 @@ class vacask(spice_common):
 
     def read_noise_result(self, **kwargs):
         """Internally called function to read the noise simulation results"""
-        self.print_log(
-            type="W",
-            msg="Reading noise results not yet implemented.",
-        )
+        import pdb
+
+        pdb.set_trace()
+        try:
+            if "noise" in self.parent.simcmd_bundle.Members.keys():
+                self.extracts.Members.update({"noise": {}})
+                base = re.compile(
+                    rf"^{re.escape(self.parent.runname)}(\d+)\.raw$"
+                )
+                files = []
+                dirpath = Path(self.parent.spicesimpath)
+                if (dirpath / f"{self.parent.runname}.raw").exists():
+                    files.append((None, str(base)))
+                # Read the raw file
+                raw = rawread(file)
+                if len(raw.arrs) == 0:
+                    self.print_log(
+                        type="E", msg="No data found in raw file %s" % file
+                    )
+                    return
+
+                onoise = []
+                inoise = []
+                freq = []
+                # # Get the first plot's data and metadata
+                # data = raw.arrs[0][1][0]
+                # varnames = raw.arrs[0][0]["varnames"]
+
+                if len(files) > 0:
+                    with open(files[0], "r") as f:
+                        for line in f:
+                            values = line.split()
+                            freq.append(float(values[0]))
+                            onoise.append(float(values[1]))
+                            inoise.append(float(values[3]))
+                self.extracts.Members["noise"].update(
+                    {"onoise_spectrum": onoise}
+                )
+                self.extracts.Members["noise"].update(
+                    {"inoise_spectrum": inoise}
+                )
+                self.extracts.Members["noise"].update({"freq": freq})
+                self.extracts.Members.update({"oppts": {}})
+        except:
+            self.print_log(type="W", msg=traceback.format_exc())
+            self.print_log(
+                type="W",
+                msg="Something went wrong while extracting results of noise simulation.",
+            )
         return None, None
 
     def read_stb_result(self, **kwargs):

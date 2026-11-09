@@ -392,15 +392,17 @@ class vacask_testbench(testbench_common):
                             type="F",
                             msg="noisesrc must be given for noise simulation",
                         )
+                    i = 0
                     for node in val.nodes:
+                        i += 1
                         self.analysis += (
                             f"analysis %s noise (\n out=%s in=%s from=%s to=%s %s write=1\n)\n"
                             % (
-                                printfile,
+                                printfile + str(i),
                                 node,
-                                self.noisesrc,
-                                self.fmin,
-                                self.fmax,
+                                val.noisesrc,
+                                val.fmin,
+                                val.fmax,
                                 pts_str,
                             )
                         )
