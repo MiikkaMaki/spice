@@ -269,7 +269,10 @@ class vacask_testbench(testbench_common):
                     )
 
                 elif str(sim).lower() == "ac":
-                    if val.fscale.lower() == "log" or val.fscale.lower() == "dec":
+                    if (
+                        val.fscale.lower() == "log"
+                        or val.fscale.lower() == "dec"
+                    ):
                         if val.fpoints != 0:
                             pts_str = 'mode="dec" points=%d' % val.fpoints
                         else:

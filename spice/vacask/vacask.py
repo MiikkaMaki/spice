@@ -338,6 +338,7 @@ class vacask(spice_common):
                     )
                     return
                 import pdb
+
                 pdb.set_trace()
                 # Get the first plot's data and metadata
                 data = raw.arrs[0][1][0]
@@ -346,7 +347,7 @@ class vacask(spice_common):
                 for i in range(len(varnames)):
                     dev = ":".join(varnames[i].split(":")[0:-2])
                     param = varnames[i].split(":")[-1]
-                    val = data[i] 
+                    val = data[i]
                     if dev not in self.extracts.Members["oppts"]:
                         self.extracts.Members["oppts"].update({dev: {}})
                     # Found new parameter for device
