@@ -486,12 +486,7 @@ class vacask_testbench(testbench_common):
             self._plotcmd = ""
             self._plotcmd += "control\n"
             self._plotcmd += options
-            """
-            self._plotcmd += (
-                "%s Output signals\n"
-                % self.parent.spice_simulator.commentchar
-            )
-            """
+            self._plotcmd += "save all\n"
             self._plotcmd += self.analysis
 
         return self._plotcmd

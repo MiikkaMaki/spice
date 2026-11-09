@@ -73,7 +73,7 @@ class vacask(spice_common):
     @property
     def cmdfile_ext(self):
         """str : Extension of the command file"""
-        return ".inc"  # TODO: proposal
+        return ".inc"
 
     @property
     def resultfile_ext(self):
@@ -262,13 +262,18 @@ class vacask(spice_common):
                 )
 
             self._vacask_spicecmd = (
-                self.parent.spice_submission
+                "cd "
+                + self.parent.spicesimpath
+                + " && "
+                + self.parent.spice_submission
                 + self.simulatorcmd
                 + nprocflag
                 + " --tomlfile "
                 + tomlfile
                 + " "
                 + self.parent.spicetbsrc
+                + " && "
+                + "cd -"
             )
         return self._vacask_spicecmd
 
