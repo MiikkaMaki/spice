@@ -337,9 +337,7 @@ class vacask(spice_common):
                         type="E", msg="No data found in raw file %s" % file
                     )
                     return
-                import pdb
 
-                pdb.set_trace()
                 # Get the first plot's data and metadata
                 data = raw.arrs[0][1][0]
                 varnames = raw.arrs[0][0]["varnames"]
