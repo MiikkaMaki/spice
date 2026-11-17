@@ -490,7 +490,13 @@ class vacask_testbench(testbench_common):
             self._plotcmd = ""
             self._plotcmd += "control\n"
             self._plotcmd += options
-            self._plotcmd += "save full\n"
+            self._plotcmd += "save default\n"
+            for sim, val in self.simcmds.Members.items():
+                if "dc" in sim:
+                    for save in val.plotlist:
+                        inst, var = save.split(":", 1)
+                        inst = inst.replace(".", ":")
+                        self._plotcmd += f'save p("{inst}",{var})\n'
             self._plotcmd += self.analysis
 
         return self._plotcmd

@@ -297,9 +297,6 @@ class vacask(spice_common):
 
     def read_noise_result(self, **kwargs):
         """Internally called function to read the noise simulation results"""
-        import pdb
-
-        pdb.set_trace()
         try:
             if "noise" in self.parent.simcmd_bundle.Members.keys():
                 self.extracts.Members.update({"noise": {}})
@@ -389,8 +386,10 @@ class vacask(spice_common):
                 varnames = raw.arrs[0][0]["varnames"]
 
                 for i in range(len(varnames)):
-                    dev = ":".join(varnames[i].split(":")[0:-2])
-                    param = varnames[i].split(":")[-1]
+                    dev = ".".join(
+                        varnames[i].replace(".", ":").split(":")[0:-1]
+                    )
+                    param = varnames[i].replace(".", ":").split(":")[-1]
                     val = data[i]
                     if dev not in self.extracts.Members["oppts"]:
                         self.extracts.Members["oppts"].update({dev: {}})
