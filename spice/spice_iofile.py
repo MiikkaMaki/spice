@@ -180,6 +180,7 @@ class spice_iofile(iofile):
         self._file = []
         for ioname in self.ionames:
             if self.dir == "out":
+                analysis = self.parent.analysis_type
                 if self.parent.simulator != "vacask":
                     if (
                         analysis.lower() == "pss"
