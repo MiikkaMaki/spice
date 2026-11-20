@@ -122,13 +122,15 @@ class vacask_testbench(testbench_common):
                 "%s DC sources\n" % self.parent.spice_simulator.commentchar
             )
             self._dcsourcestr += "model v vsource\n"
+            self._dcsourcestr += "model i isource\n"
             for name, val in self.dcsources.Members.items():
                 value = val.value if val.paramname is None else val.paramname
                 supply = "%s%s" % (val.sourcetype.upper(), val.name.upper())
-                self._dcsourcestr += "%s (%s %s) v dc=%s\n" % (
+                self._dcsourcestr += "%s (%s %s) %s dc=%s\n" % (
                     name,
                     val.pos,
                     val.neg,
+                    val.sourcetype.lower(),
                     value,
                 )
         return self._dcsourcestr
